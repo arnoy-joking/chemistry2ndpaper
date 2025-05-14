@@ -3,477 +3,1225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chemistry 2nd Paper - HSC 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Chemistry 2nd Paper</title>
     <style>
-        /* Basic dark theme styles */
+        /* Import fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+        /* CSS Variables */
+        :root {
+          --background: #121212;
+          --foreground: #f5f5f5;
+          --muted: #282828;
+          --muted-foreground: #a3a3a3;
+          --card: #1e1e1e;
+          --card-foreground: #f5f5f5;
+          --border: #303030;
+          --input: #303030;
+          --primary: #9333ea;
+          --primary-foreground: #ffffff;
+          --secondary: #10b981;
+          --secondary-foreground: #ffffff;
+          --accent: #f59e0b;
+          --accent-foreground: #1f2937;
+          --destructive: #ef4444;
+          --radius: 0.5rem;
+        }
+
+        /* Base Styles */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
         body {
-            background-image: url('https://img.freepik.com/free-vector/abstract-blue-circle-black-background-technology_1142-12714.jpg?t=st=1746541992~exp=1746545592~hmac=0a0242f10827fa6240cd3daf8fce772208de97db1a053c959e6f07d12e6e6d51&w=996'); /* Set the background image */
-            background-size: cover; /* Cover the entire background */
-            background-repeat: no-repeat; /* Do not repeat the image */
-            background-attachment: fixed; /* Keep the background fixed when scrolling */
-            background-position: center center; /* Center the background image */
-            color: #e0e0e0; /* Light grey text */
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column; /* Stack content vertically */
-            justify-content: flex-start; /* Align content to the top */
-            align-items: center; /* Center content horizontally */
-            min-height: 100vh; /* Minimum full height */
-            padding-top: 70px; /* Add padding for the fixed header/logo area */
-            box-sizing: border-box; /* Include padding in element's total width and height */
+          font-family: 'Inter', sans-serif;
+          background-color: var(--background);
+          color: var(--foreground);
+          line-height: 1.5;
+          background-image: url('https://img.freepik.com/free-vector/abstract-blue-circle-black-background-technology_1142-12714.jpg?w=996');
+          background-size: cover;
+          background-attachment: fixed;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
         }
 
-        .header-bar {
-            position: fixed; /* Keep the header fixed at the top */
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #282828; /* Match container background */
-            padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 1000; /* Ensure it stays on top */
-            display: flex;
-            align-items: center;
+        h1, h2, h3, h4, h5, h6 {
+          font-family: 'Poppins', sans-serif;
+          font-weight: 600;
         }
 
-        .header-bar a {
-            display: flex; /* Use flex to align logo image */
-            align-items: center;
-            text-decoration: none; /* Remove underline from link */
+        .container {
+          width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1rem;
         }
 
-        .header-bar img {
-            height: 40px; /* Adjust logo size as needed */
-            margin-right: 10px;
+        .hidden {
+          display: none !important;
         }
 
-        .header-bar span {
-            color: #e0e0e0; /* Text color for header */
-            font-size: 1.2em;
-            font-weight: bold;
+        .highlight {
+          color: var(--accent);
         }
 
-        .lecture-player-container {
-            display: flex; /* Use flexbox for side-by-side layout */
-            width: 95%; /* Adjust width as needed */
-            max-width: 1200px; /* Max width for larger screens */
-            margin: 20px auto; /* Center the container below the header and add space */
-            gap: 20px; /* Space between video and list */
-            min-height: calc(100vh - 90px - 80px); /* Ensure minimum height considering header, margin, and footer */
-            align-items: flex-start; /* Align items to the top */
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            flex-grow: 1; /* Allow container to grow and push footer down */
+        /* Header */
+        .site-header {
+          background: linear-gradient(to right, var(--background), rgba(147, 51, 234, 0.8));
+          border-bottom: 1px solid rgba(147, 51, 234, 0.3);
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+          position: sticky;
+          top: 0;
+          z-index: 50;
         }
 
-        .player-area {
-            flex: 3; /* Player takes up 3/4 of space for 3:1 ratio */
-            display: flex;
-            flex-direction: column; /* Stack video and download link */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
-            background-color: #282828; /* Slightly lighter dark background */
-            padding: 15px; /* Increased padding */
-            border-radius: 8px;
-            min-width: 300px; /* Minimum width for player area */
-            box-sizing: border-box;
-            min-height: 550px; /* Increased minimum height for the player area */
+        .site-header .container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 1rem;
         }
 
-        .video-embed {
-            position: relative; /* Needed for aspect ratio trick */
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio (height / width = 0.5625) */
-            background-color: #000; /* Black background for video area */
-            border-radius: 4px;
-            overflow: hidden; /* Hide anything outside the rounded corners */
-            margin-bottom: 15px; /* Space below the video */
+        .logo-area {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
         }
 
-        .video-embed iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0; /* Remove default iframe border */
+        .logo {
+          height: 2.5rem;
         }
 
-        .pdf-download {
-            text-align: left; /* Align button to the left */
-            width: 100%; /* Ensure div takes full width */
+        .site-title {
+          font-size: 1.25rem;
+          font-weight: 700;
         }
 
-        .download-button {
-            display: inline-block;
-            background-color: #333; /* Dark grey button */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none; /* Remove underline */
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            border: 1px solid #555; /* Subtle border */
+        .user-area {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
         }
 
-        .download-button:hover {
-            background-color: #555; /* Slightly lighter grey on hover */
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.875rem;
         }
 
-        .lecture-list-area {
-            flex: 1; /* List takes up 1/4 of space for 3:1 ratio */
-            background-color: #282828; /* Slightly lighter dark background */
-            padding: 15px; /* Increased padding */
-            border-radius: 8px;
-            overflow-y: auto; /* Make list scrollable */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
-            min-width: 200px; /* Minimum width for list area */
-            box-sizing: border-box;
-            /* Height will be set by JS to match player-area height */
+        .logout-btn {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+          border: none;
+          border-radius: var(--radius);
+          padding: 0.375rem 0.75rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          transition: background-color 0.2s;
+          font-family: inherit;
+          font-size: 0.875rem;
         }
 
-        .lecture-list {
-            list-style: none; /* Remove default bullets */
-            padding: 0;
-            margin: 0;
+        .logout-btn:hover {
+          background-color: rgba(147, 51, 234, 0.8);
         }
 
-        .lecture-item {
-            padding: 10px 15px;
-            margin-bottom: 8px; /* Increased space between list items */
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease;
-            color: inherit; /* Inherit text color from parent */
-            background-color: #3a3a3a; /* Slightly darker background for list items */
-            border: 1px solid #444; /* Subtle border for list items */
+        /* Main Content */
+        .main-content {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+          padding: 1rem;
+          flex-grow: 1;
         }
 
-        .lecture-item:last-child {
-            margin-bottom: 0; /* Remove bottom margin from the last item */
+        /* Video Container */
+        .video-container {
+          width: 100%;
         }
 
-        .lecture-item:hover {
-            background-color: #4a4a4a; /* Darker background on hover */
-            color: #ffffff; /* White text on hover */
+        .video-card {
+          background-color: var(--card);
+          border-radius: var(--radius);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          border: 1px solid rgba(147, 51, 234, 0.2);
         }
 
-        .lecture-item.active {
-            background-color: #007bff; /* Highlight color for the active item */
-            color: white;
-            font-weight: bold;
-            border-color: #007bff; /* Match border color */
+        .video-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid var(--border);
         }
 
-        /* Custom scrollbar for the list area */
-        .lecture-list-area::-webkit-scrollbar {
-            width: 8px;
+        .video-title {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 1.125rem;
+          color: var(--foreground);
         }
 
-        .lecture-list-area::-webkit-scrollbar-track {
-            background: #3a3a3a; /* Darker track */
-            border-radius: 10px;
+        .video-title i {
+          color: var(--accent);
         }
 
-        .lecture-list-area::-webkit-scrollbar-thumb {
-            background: #5a5a5a; /* Scrollbar thumb color */
-            border-radius: 10px;
+        .video-meta {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
         }
 
-        .lecture-list-area::-webkit-scrollbar-thumb:hover {
-            background: #7a7a7a; /* Darker thumb on hover */
+        .label {
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          border-radius: var(--radius);
         }
 
-        /* Footer styles */
-        .footer {
-            width: 100%;
-            background-color: #282828; /* Match container background */
-            color: #e0e0e0;
-            text-align: center;
-            padding: 20px;
-            margin-top: 20px; /* Space above the footer */
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-            box-sizing: border-box;
+        .label.live {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
         }
 
-        .quote {
-            font-style: italic;
-            opacity: 1;
-            transition: opacity 1s ease-in-out; /* Fade transition */
+        .label.duration {
+          background-color: var(--muted);
+          color: var(--muted-foreground);
         }
 
-        .quote.fade-out {
+        .video-player-container {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16/9;
+          background-color: #000;
+        }
+
+        .video-thumbnail {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+        }
+
+        .thumbnail-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0.7;
+        }
+
+        .play-button-overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .play-button {
+          width: 5rem;
+          height: 5rem;
+          border-radius: 50%;
+          background-color: rgba(245, 158, 11, 0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+          transition: background-color 0.2s;
+        }
+
+        .play-button i {
+          font-size: 2.5rem;
+          color: white;
+          margin-left: 0.5rem; /* Center the play icon */
+        }
+
+        .play-button:hover {
+          background-color: var(--accent);
+        }
+
+        .click-to-play {
+          position: absolute;
+          bottom: 1rem;
+          left: 0;
+          right: 0;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+          color: white;
+          font-weight: 500;
+          padding: 1rem;
+        }
+
+        .youtube-embed {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+
+        .youtube-embed iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+        }
+
+        .video-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          padding: 1rem;
+          background: linear-gradient(to bottom, var(--muted), var(--card));
+        }
+
+        .action-btn {
+          flex: 1;
+          min-width: 140px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0.625rem 1rem;
+          border-radius: var(--radius);
+          border: none;
+          font-family: inherit;
+          font-size: 0.875rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:hover {
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-btn i {
+          margin-right: 0.5rem;
+        }
+
+        .download-btn {
+          background-color: var(--secondary);
+          color: var(--secondary-foreground);
+        }
+
+        .download-btn:hover {
+          background-color: rgba(16, 185, 129, 0.8);
+        }
+
+        .youtube-btn {
+          background-color: var(--accent);
+          color: var(--accent-foreground);
+        }
+
+        .youtube-btn:hover {
+          background-color: rgba(245, 158, 11, 0.8);
+        }
+
+        /* Class List */
+        .class-list-container {
+          width: 100%;
+        }
+
+        .class-list-card {
+          background-color: var(--card);
+          border-radius: var(--radius);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          border: 1px solid rgba(147, 51, 234, 0.2);
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+
+        .class-list-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5rem 0.75rem;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .list-title {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 1rem;
+          color: var(--foreground);
+        }
+
+        .list-title i {
+          color: var(--accent);
+        }
+
+        .list-actions {
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .icon-btn {
+          background-color: var(--muted);
+          color: var(--muted-foreground);
+          border: none;
+          border-radius: var(--radius);
+          width: 2rem;
+          height: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.75rem;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .icon-btn:hover {
+          background-color: rgba(147, 51, 234, 0.3);
+        }
+
+        .category-filters {
+          padding: 0.5rem 0.75rem;
+          background-color: var(--muted);
+          border-bottom: 1px solid var(--border);
+        }
+
+        .filter-scroll {
+          display: flex;
+          gap: 0.5rem;
+          overflow-x: auto;
+          padding-bottom: 0.25rem;
+        }
+
+        .filter-scroll::-webkit-scrollbar {
+          height: 4px;
+        }
+
+        .filter-scroll::-webkit-scrollbar-track {
+          background: var(--muted);
+          border-radius: 2px;
+        }
+
+        .filter-scroll::-webkit-scrollbar-thumb {
+          background: var(--primary);
+          border-radius: 2px;
+        }
+
+        .category-btn {
+          background-color: var(--card);
+          color: var(--muted-foreground);
+          border: none;
+          border-radius: 9999px;
+          padding: 0.25rem 0.75rem;
+          font-size: 0.75rem;
+          white-space: nowrap;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .category-btn:hover {
+          background-color: var(--muted);
+        }
+
+        .category-btn.active {
+          background-color: var(--primary);
+          color: var(--primary-foreground);
+        }
+
+        .class-items {
+          list-style: none;
+          overflow-y: auto;
+          max-height: 500px;
+          flex-grow: 1;
+        }
+
+        .class-items::-webkit-scrollbar {
+          width: 4px;
+        }
+
+        .class-items::-webkit-scrollbar-track {
+          background: var(--muted);
+          border-radius: 2px;
+        }
+
+        .class-items::-webkit-scrollbar-thumb {
+          background: var(--primary);
+          border-radius: 2px;
+        }
+
+        .class-item {
+          padding: 0.5rem 0.75rem;
+          border-bottom: 1px solid rgba(147, 51, 234, 0.1);
+          cursor: pointer;
+          position: relative;
+          transition: all 0.2s;
+        }
+
+        .class-item:hover {
+          background-color: rgba(147, 51, 234, 0.1);
+        }
+
+        .class-item.selected {
+          background-color: rgba(147, 51, 234, 0.2);
+          border-left: 4px solid var(--primary);
+        }
+
+        .selected-indicator {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 2px;
+          background-color: var(--accent);
+        }
+
+        .class-item-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+
+        .class-info {
+          display: flex;
+          gap: 0.75rem;
+        }
+
+        .class-icon {
+          position: relative;
+          margin-top: 0.125rem;
+        }
+
+        .class-icon i {
+          font-size: 1.125rem;
+          color: var(--muted-foreground);
+        }
+
+        .selected .class-icon i {
+          color: var(--accent);
+        }
+
+        .playing-indicator {
+          position: absolute;
+          top: -0.25rem;
+          right: -0.25rem;
+          width: 0.75rem;
+          height: 0.75rem;
+        }
+
+        .playing-indicator-ping {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background-color: var(--accent);
+          opacity: 0.75;
+          animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .playing-indicator-dot {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background-color: var(--accent);
+        }
+
+        @keyframes ping {
+          75%, 100% {
+            transform: scale(2);
             opacity: 0;
+          }
         }
 
+        .class-details {
+          flex-grow: 1;
+          min-width: 0; /* Ensure text truncation works */
+        }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            body {
-                padding-top: 60px; /* Adjust padding for smaller header */
-            }
-             .header-bar {
-                padding: 8px 15px;
-             }
-             .header-bar img {
-                height: 30px; /* Smaller logo on mobile */
-             }
-             .header-bar span {
-                font-size: 1em;
-             }
+        .class-title {
+          font-size: 0.875rem;
+          font-weight: 500;
+          margin-bottom: 0.25rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
 
-            .lecture-player-container {
-                flex-direction: column; /* Stack items vertically on smaller screens */
-                width: 95%;
-                margin: 10px auto;
-                gap: 10px; /* Reduced gap on mobile */
-                min-height: auto; /* Remove min-height on small screens */
-            }
+        .selected .class-title {
+          color: white;
+        }
 
-            .player-area,
-            .lecture-list-area {
-                flex: none; /* Remove flex grow */
-                width: 100%; /* Full width */
-                height: auto !important; /* Allow height to be determined by content */
-                padding: 10px; /* Reduced padding on mobile */
-                min-height: auto; /* Remove fixed min-height on small screens */
-            }
+        .class-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          font-size: 0.75rem;
+          color: var(--muted-foreground);
+        }
 
-            .lecture-list-area {
-                max-height: 300px; /* Limit list height and make it scrollable */
-            }
+        .class-meta-item {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
 
-            .footer {
-                padding: 15px; /* Reduced padding on mobile */
-            }
+        .now-playing {
+          color: var(--accent);
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+        }
+
+        .now-playing i {
+          font-size: 0.625rem;
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+
+        .class-pdf-link {
+          color: var(--secondary);
+          text-decoration: none;
+          font-size: 0.75rem;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          transition: color 0.2s;
+        }
+
+        .class-pdf-link:hover {
+          color: rgba(16, 185, 129, 0.8);
+        }
+
+        /* Footer */
+        .site-footer {
+          background-color: var(--background);
+          border-top: 1px solid var(--border);
+          margin-top: 2rem;
+        }
+
+        .footer-content {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 2rem;
+          padding: 1.5rem 0;
+        }
+
+        .footer-logo {
+          flex: 1;
+          min-width: 200px;
+        }
+
+        .footer-logo img {
+          height: 2rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .footer-logo p {
+          font-size: 0.875rem;
+          color: var(--muted-foreground);
+        }
+
+        .footer-quote {
+          flex: 2;
+          min-width: 300px;
+          font-size: 0.875rem;
+          color: var(--muted-foreground);
+        }
+
+        .quote-author {
+          text-align: right;
+          font-size: 0.75rem;
+          margin-top: 0.25rem;
+        }
+
+        .footer-social {
+          display: flex;
+          gap: 1rem;
+        }
+
+        .social-link {
+          color: var(--muted-foreground);
+          transition: color 0.2s;
+        }
+
+        .social-link:hover {
+          color: var(--accent);
+        }
+
+        .footer-copyright {
+          text-align: center;
+          padding: 1.5rem 0;
+          border-top: 1px solid var(--border);
+          font-size: 0.75rem;
+          color: var(--muted-foreground);
+        }
+
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+          .main-content {
+            flex-direction: row;
+          }
+
+          .video-container {
+            width: 60%;
+          }
+
+          .class-list-container {
+            width: 40%;
+          }
+
+          .logout-btn span {
+            display: inline;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .logout-btn span {
+            display: none;
+          }
+
+          .user-info span {
+            display: none;
+          }
+
+          .footer-content {
+            flex-direction: column;
+            gap: 1.5rem;
+          }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="description" content="Online learning platform for Chemistry 1st Paper - HSC 2026 with video lessons and downloadable materials">
 </head>
 <body>
-
-    <div class="header-bar">
-        <a href="https://arnoy-joking.github.io/courseindexbp/" target="_blank" rel="noopener noreferrer">
-            <img src="https://www.bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo">
-            <span>Bondi Pathshala Lectures</span>
-        </a>
-    </div>
-
-    <div class="lecture-player-container">
-        <div id="player-area" class="player-area">
-            <div class="video-embed">
-                <iframe id="youtube-iframe" src="" title="Lecture Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo-area">
+                <img src="https://bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo" class="logo">
+                <h1 class="site-title"><span class="highlight">Chemistry</span> 1st Paper - HSC 2026</h1>
             </div>
-            <div id="pdf-download" class="pdf-download">
-                <a id="pdf-link" href="#" target="_blank" rel="noopener noreferrer" class="download-button">Download PDF</a>
+            <div class="user-area">
+                <div class="user-info">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Student</span>
+                </div>
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
             </div>
         </div>
-        <div id="lecture-list-area" class="lecture-list-area">
-            <ul id="lecture-list" class="lecture-list">
-                </ul>
-        </div>
-    </div>
+    </header>
 
-    <footer class="footer">
-        <p id="motivational-quote" class="quote"></p>
+    <main class="container main-content">
+        <div class="video-container">
+            <div class="video-card">
+                <div class="video-header">
+                    <h2 class="video-title">
+                        <i class="fas fa-play-circle"></i>
+                        <span id="current-video-title">Loading...</span>
+                    </h2>
+                    <div class="video-meta">
+                        <span class="label live">LIVE</span>
+                        <span class="label duration" id="current-video-duration">00:00</span>
+                    </div>
+                </div>
+
+                <div class="video-player-container">
+                    <div id="video-thumbnail-container" class="video-thumbnail">
+                        <img id="video-thumbnail" src="" alt="Video thumbnail" class="thumbnail-img">
+                        <div class="play-button-overlay">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <p class="click-to-play">Click to play video</p>
+                        </div>
+                    </div>
+
+                    <div id="youtube-embed-container" class="youtube-embed hidden">
+                        <iframe id="youtube-iframe"
+                            frameborder="0"
+                            allowfullscreen
+                            loading="lazy"
+                            title="Class video">
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="video-actions">
+                    <button id="download-pdf-btn" class="action-btn download-btn">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Download PDF</span>
+                    </button>
+                    <button id="open-youtube-btn" class="action-btn youtube-btn">
+                        <i class="fab fa-youtube"></i>
+                        <span>Open on YouTube</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="class-list-container">
+            <div class="class-list-card">
+                <div class="class-list-header">
+                    <h2 class="list-title">
+                        <i class="fas fa-list-ul"></i>
+                        Class List
+                    </h2>
+                    <div class="list-actions">
+                        <button class="icon-btn filter-btn">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                        <button class="icon-btn search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="category-filters">
+                    <div class="filter-scroll">
+                        </div>
+                </div>
+
+                <ul id="class-list" class="class-items">
+                    </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://bondipathshala.com.bd/files/logo.png" alt="Bondi Pathshala Logo" class="logo">
+                    <p>Empowering students with quality education since 2015</p>
+                </div>
+                <div class="footer-quote">
+                    <p>"The scientist is not a person who gives the right answers, but one who asks the right questions."</p>
+                    <p class="quote-author">- Claude Lévi-Strauss</p>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                &copy; <span id="current-year"></span> Bondi Pathshala. All rights reserved.
+            </div>
+        </div>
     </footer>
 
     <script>
-        // Data for the lectures - Add new classes by adding objects to this array
-        const lectureData = [
-            { vid: "UYKjozabKqo", pdfId: "20250218-1739823323-3VzTLEL1.pdf", title: "পরিবেশ রসায়ন - পর্ব ০১" },
-            { vid: "zDyEkh6n0e8", pdfId: "20250223-1740247928-odF2s7sY.pdf", title: "পরিবেশ রসায়ন - পর্ব ০২" },
-            { vid: "nWjQ3MRWxwo", pdfId: "20250225-1740429645-LEv6OOKn.pdf", title: "পরিবেশ রসায়ন - পর্ব ০৩" },
-            { vid: "3_3trnRP39Y", pdfId: "20250303-1740940741-meClfVqN.pdf", title: "পরিবেশ রসায়ন - পর্ব ০৪" },
-            { vid: "bC00Z3Ic1Xk", pdfId: "20250306-1741200018-xWiO1pyn.pdf", title: "পরিবেশ রসায়ন - পর্ব ৫.১" },
-            { vid: "bgQHU6Xujk0", pdfId: "20250306-1741200018-xWiO1pyn.pdf", title: "পরিবেশ রসায়ন - পর্ব ৫.২" },
-            { vid: "7IMIa5hhLRI", pdfId: "20250311-1741633017-K9qX4VRe.pdf", title: "পরিবেশ রসায়ন - পর্ব ০৬" },
-            { vid: "uJ856LNuNew", pdfId: "20250312-1741782028-HG9S5qpX.pdf", title: "পরিবেশ রসায়ন - পর্ব ০৭" },
-            { vid: "M1c8rt6PQNg", pdfId: "20250317-1742185178-YIKmZZW9.pdf", title: "পরিবেশ রসায়ন - পর্ব ০ আট" },
-            { vid: "JXw939poe3s", pdfId: "20250319-1742389133-v4UTOPzR.pdf", title: "পরিবেশ রসায়ন - পর্ব ০৯" },
-            { vid: "3O7YKhp_ecc", pdfId: "20250324-1742753112-1Y11SX5L.pdf", title: "পরিবেশ রসায়ন - পর্ব ১০" },
-            { vid: "ipP4qHlM6BE", pdfId: "20250326-1742990797-waHcgGmU.pdf", title: "পরিবেশ রসায়ন । CQ Solve" },
-            { vid: "87dsre6Xmu8", pdfId: "20250326-1742990954-0FjGgcaK.pdf", title: "পরিবেশ রসায়ন । Engineering Question Solve" },
-            { vid: "KX9Zsr0q-sM", pdfId: "20250327-1743018786-VGGzkUun.pdf", title: "পরি পরিবেশ রসায়ন - পর্ব ১১" },
-            { vid: "zLC6TKypyjU", pdfId: null, title: "পরিমাণগত রসায়ন - Shawon Reza" },
-            { vid: "of06Ub_etWw", pdfId: "20250414-1744575810-wa0Fvcck.pdf", title: "পরিমাণগত রসায়ন - পর্ব ০১" },
-            { vid: "xz61nu85cIY", pdfId: "20250416-1744744963-MlP5oCQ3.pdf", title: "পরিমাণগত রসায়ন - পর্ব ০২" },
-            { vid: "F1mnRXoahO0", pdfId: "20250418-1744921916-P3IbDZg8.pdf", title: "পরিমাণগত রসায়ন - পর্ব ০৩" },
-            { vid: "hIdjjYBlmSE", pdfId: "20250421-1745183180-EYuNW0w2.pdf", title: "পরিমাণগত রসায়ন - পর্ব ০৪" },
-            { vid: "vE0d8VQ6tPM", pdfId: "20250423-1745347488-uxt3UlV5.pdf", title: "পরিমাণগত রসায়ন - পর্ব ০৫" },
-            { vid: "7QzJDf9fHmM", pdfId: null, title: "পরিমানগত  রসায়ন - পর্ব ০৬" }, // This entry has no PDF
-            { vid: "n-G4CH8uAiU", pdfId: "20250430-1745959044-cxfl0JEK.pdf", title: "পরিমাণগত রসায়ন - পর্ব ০৭" },
+        // Class data for the chemistry course
+        const classData = [
+         [
+  {
+    "videoId": "UYKjozabKqo",
+    "title": "পরিবেশ রসায়ন - পর্ব ০১",
+    "pdfLink": "20250218-1739823323-3VzTLEL1.pdf",
+    "duration": "N/A",
+    "date": "Feb 18, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "zDyEkh6n0e8",
+    "title": "পরিবেশ রসায়ন - পর্ব ০২",
+    "pdfLink": "20250223-1740247928-odF2s7sY.pdf",
+    "duration": "N/A",
+    "date": "Feb 23, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "nWjQ3MRWxwo",
+    "title": "পরিবেশ রসায়ন - পর্ব ০৩",
+    "pdfLink": "20250225-1740429645-LEv6OOKn.pdf",
+    "duration": "N/A",
+    "date": "Feb 25, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "3_3trnRP39Y",
+    "title": "পরিবেশ রসায়ন - পর্ব ০৪",
+    "pdfLink": "20250303-1740940741-meClfVqN.pdf",
+    "duration": "N/A",
+    "date": "Mar 03, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "bC00Z3Ic1Xk",
+    "title": "পরিবেশ রসায়ন - পর্ব ৫.১",
+    "pdfLink": "20250306-1741200018-xWiO1pyn.pdf",
+    "duration": "N/A",
+    "date": "Mar 06, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "bgQHU6Xujk0",
+    "title": "পরিবেশ রসায়ন - পর্ব ৫.২",
+    "pdfLink": "20250306-1741200018-xWiO1pyn.pdf",
+    "duration": "N/A",
+    "date": "Mar 06, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "7IMIa5hhLRI",
+    "title": "পরিবেশ রসায়ন - পর্ব ০৬",
+    "pdfLink": "20250311-1741633017-K9qX4VRe.pdf",
+    "duration": "N/A",
+    "date": "Mar 11, 2025",
+    "category": "পরি পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "uJ856LNuNew",
+    "title": "পরিবেশ রসায়ন - পর্ব ০৭",
+    "pdfLink": "20250312-1741782028-HG9S5qpX.pdf",
+    "duration": "N/A",
+    "date": "Mar 12, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "M1c8rt6PQNg",
+    "title": "পরিবেশ রসায়ন - পর্ব ০ আট",
+    "pdfLink": "20250317-1742185178-YIKmZZW9.pdf",
+    "duration": "N/A",
+    "date": "Mar 17, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "JXw939poe3s",
+    "title": "পরিবেশ রসায়ন - পর্ব ০৯",
+    "pdfLink": "20250319-1742389133-v4UTOPzR.pdf",
+    "duration": "N/A",
+    "date": "Mar 19, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "3O7YKhp_ecc",
+    "title": "পরিবেশ রসায়ন - পর্ব ১০",
+    "pdfLink": "20250324-1742753112-1Y11SX5L.pdf",
+    "duration": "N/A",
+    "date": "Mar 24, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "ipP4qHlM6BE",
+    "title": "পরিবেশ রসায়ন । CQ Solve",
+    "pdfLink": "20250326-1742990797-waHcgGmU.pdf",
+    "duration": "N/A",
+    "date": "Mar 26, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "87dsre6Xmu8",
+    "title": "পরিবেশ রসায়ন । Engineering Question Solve",
+    "pdfLink": "20250326-1742990954-0FjGgcaK.pdf",
+    "duration": "N/A",
+    "date": "Mar 26, 2025",
+    "category": "পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "KX9Zsr0q-sM",
+    "title": "পরি পরিবেশ রসায়ন - পর্ব ১১",
+    "pdfLink": "20250327-1743018786-VGGzkUun.pdf",
+    "duration": "N/A",
+    "date": "Mar 27, 2025",
+    "category": "পরি পরিবেশ রসায়ন"
+  },
+  {
+    "videoId": "zLC6TKypyjU",
+    "title": "পরিমাণগত রসায়ন - Shawon Reza",
+    "pdfLink": null,
+    "duration": "N/A",
+    "date": "N/A",
+    "category": "পরিমাণগত রসায়ন"
+  },
+  {
+    "videoId": "of06Ub_etWw",
+    "title": "পরিমাণগত রসায়ন - পর্ব ০১",
+    "pdfLink": "20250414-1744575810-wa0Fvcck.pdf",
+    "duration": "N/A",
+    "date": "Apr 14, 2025",
+    "category": "পরিমাণগত রসায়ন"
+  },
+  {
+    "videoId": "xz61nu85cIY",
+    "title": "পরিমাণগত রসায়ন - পর্ব ০২",
+    "pdfLink": "20250416-1744744963-MlP5oCQ3.pdf",
+    "duration": "N/A",
+    "date": "Apr 16, 2025",
+    "category": "পরিমাণগত রসায়ন"
+  },
+  {
+    "videoId": "F1mnRXoahO0",
+    "title": "পরিমাণগত রসায়ন - পর্ব ০৩",
+    "pdfLink": "20250418-1744921916-P3IbDZg8.pdf",
+    "duration": "N/A",
+    "date": "Apr 18, 2025",
+    "category": "পরিমাণগত রসায়ন"
+  },
+  {
+    "videoId": "hIdjjYBlmSE",
+    "title": "পরিমাণগত রসায়ন - পর্ব ০৪",
+    "pdfLink": "20250421-1745183180-EYuNW0w2.pdf",
+    "duration": "N/A",
+    "date": "Apr 21, 2025",
+    "category": "পরিমাণগত রসায়ন"
+  },
+  {
+    "videoId": "vE0d8VQ6tPM",
+    "title": "পরিমাণগত রসায়ন - পর্ব ০৫",
+    "pdfLink": "20250423-1745347488-uxt3UlV5.pdf",
+    "duration": "N/A",
+    "date": "Apr 23, 2025",
+    "category": "পরিমাণগত রসায়ন"
+  },
+  {
+    "videoId": "7QzJDf9fHmM",
+    "title": "পরিমানগত  রসায়ন - পর্ব ০৬",
+    "pdfLink": null,
+    "duration": "N/A",
+    "date": "N/A",
+    "category": "পরিমাণগত রসায়ন"
+  },
+  {
+    "videoId": "n-G4CH8uAiU",
+    "title": "পরিমাণগত রসায়ন - পর্ব ০৭",
+    "pdfLink": "20250430-1745959044-cxfl0JEK.pdf",
+    "duration": "N/A",
+    "date": "Apr 30, 2025",
+    "category": "পরিমাণগত রসায়ন"
+  }
+]
         ];
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // DOM Elements
+          const currentVideoTitle = document.getElementById('current-video-title');
+          const currentVideoDuration = document.getElementById('current-video-duration');
+          const videoThumbnailContainer = document.getElementById('video-thumbnail-container');
+          const youtubeEmbedContainer = document.getElementById('youtube-embed-container');
+          const youtubeIframe = document.getElementById('youtube-iframe');
+          const videoThumbnail = document.getElementById('video-thumbnail');
+          const downloadPdfBtn = document.getElementById('download-pdf-btn');
+          const openYoutubeBtn = document.getElementById('open-youtube-btn');
+          const classList = document.getElementById('class-list');
+          const filterContainer = document.querySelector('.filter-scroll');
+          const currentYear = document.getElementById('current-year');
 
+          // Current state
+          let currentVideoId = '';
+          let currentFilterCategory = null;
 
-         // Motivational quotes for students
-        const motivationalQuotes = [
-            "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
-            "The only way to do great work is to love what you do. - Steve Jobs",
-            "Education is the most powerful weapon which you can use to change the world. - Nelson Mandela",
-            "Success is not final, failure is not fatal: It is the courage to continue that counts. - Winston Churchill",
-            "Believe you can and you're halfway there. - Theodore Roosevelt",
-            "The mind is not a vessel to be filled, but a fire to be kindled. - Plutarch",
-            "Strive for progress, not perfection. - Unknown",
-            "Your education is a dress rehearsal for a life that is yours to lead. - Nora Ephron",
-            "The beautiful thing about learning is that no one can take it away from you. - B.B. King",
-            "The expert in anything was once a beginner. - Helen Hayes"
-        ];
+          // Set current year in footer
+          currentYear.textContent = new Date().getFullYear();
 
-        let currentQuoteIndex = 0;
-        const quoteElement = document.getElementById('motivational-quote');
+          // Initialize app
+          initializeApp();
 
-        // Get references to DOM elements
-        const lectureListAreaDiv = document.getElementById('lecture-list-area');
-        const lectureListUl = document.getElementById('lecture-list');
-        const videoPlayer = document.getElementById('youtube-iframe');
-        const pdfLink = document.getElementById('pdf-link');
-        const pdfDownloadDiv = document.getElementById('pdf-download');
+          function initializeApp() {
+            renderCategoryFilters();
+            renderClassList();
+            loadLastWatchedVideo();
+            setupEventListeners();
+          }
 
+          function renderCategoryFilters() {
+            // Get unique categories from classData
+            const categories = ['All Classes', ...new Set(classData.map(cls => cls.category))];
 
-        // Function to remove the 'active' class from all list items
-        function clearActive() {
-            document.querySelectorAll('.lecture-item.active').forEach(el => {
-                el.classList.remove('active');
-            });
-        }
+            // Generate HTML for category filters
+            const filtersHtml = categories.map(category => {
+              const isActive = category === currentFilterCategory || (category === 'All Classes' && currentFilterCategory === null);
+              return `
+                <button class="category-btn ${isActive ? 'active' : ''}" data-category="${category === 'All Classes' ? '' : category}">
+                  ${category}
+                </button>
+              `;
+            }).join('');
 
-         // Function to load a specific lecture
-        function loadLecture(lecture) {
-            // Update iframe source
-            const youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${lecture.vid}?rel=0&modestbranding=1&showinfo=0&controls=1`;
-            videoPlayer.src = youtubeEmbedUrl;
+            // Insert HTML into filter container
+            filterContainer.innerHTML = filtersHtml;
 
-            // Update PDF link visibility and href
-            if (lecture.pdfId) {
-                const pdfDownloadUrl = `https://www.bondipathshala.com.bd/pdf/${lecture.pdfId}`;
-                pdfLink.href = pdfDownloadUrl;
-                pdfDownloadDiv.style.display = 'block'; // Show the download link
-            } else {
-                pdfLink.href = '#'; // Set a dummy href
-                pdfDownloadDiv.style.display = 'none'; // Hide the download link
-            }
+            // Add event listeners to category buttons
+            document.querySelectorAll('.category-btn').forEach(button => {
+              button.addEventListener('click', function() {
+                const category = this.dataset.category;
+                currentFilterCategory = category || null;
 
-            // Update active class in the list
-            clearActive();
-            const newActiveItem = lectureListUl.querySelector(`li[data-vid="${lecture.vid}"]`);
-            if (newActiveItem) {
-                newActiveItem.classList.add('active');
-            }
-
-            // Sync heights after loading new video (optional, flexbox helps)
-            // Use a small timeout to allow iframe resize to potentially affect parent height
-             setTimeout(syncHeights, 100);
-        }
-
-
-        // Function to populate the lecture list dynamically from lectureData
-        function populateLectureList() {
-            lectureData.forEach(lecture => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('lecture-item');
-                 // Add Tailwind classes for styling
-                listItem.classList.add('cursor-pointer', 'text-white', 'px-3', 'py-2', 'rounded-md', 'hover:bg-slate-700');
-                // Add data attributes for video ID, PDF ID, and class ID
-                listItem.dataset.vid = lecture.vid;
-                if (lecture.pdfId) {
-                    listItem.dataset.npdf = lecture.pdfId;
-                }
-                // Assuming clid might be needed, though not in the provided data
-                // if (lecture.clid) {
-                //     listItem.dataset.clid = lecture.clid;
-                // }
-                listItem.textContent = lecture.title;
-                listItem.tabIndex = 0; // Make list items focusable
-
-                // Add click event listener to each dynamically created list item
-                listItem.addEventListener('click', () => {
-                    loadLecture(lecture);
+                // Update active state
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                  btn.classList.toggle('active',
+                    (btn.dataset.category === category) ||
+                    (btn.dataset.category === '' && category === '')
+                  );
                 });
 
-                lectureListUl.appendChild(listItem);
+                // Re-render class list with filter
+                renderClassList();
+              });
             });
-        }
+          }
 
+          function renderClassList() {
+            // Filter class data based on current filter
+            const filteredClasses = currentFilterCategory
+              ? classData.filter(cls => cls.category === currentFilterCategory)
+              : classData;
 
-        // Function to synchronize the height of the list with the player area
-        function syncHeights() {
-             // Only sync heights if not on a small screen where stacking occurs
-            if (window.innerWidth > 768) {
-                // Reset height to allow content to dictate initial height
-                lectureListAreaDiv.style.height = 'auto';
-                // Use offsetHeight for the rendered height of the player area
-                const playerHeight = document.getElementById('player-area').offsetHeight;
-                lectureListAreaDiv.style.height = `${playerHeight}px`;
-            } else {
-                 // On small screens, remove fixed height and apply max-height for scrolling
-                 lectureListAreaDiv.style.height = 'auto';
-                 // Max-height is already set in CSS for small screens
+            // Generate HTML for class list
+            const classListHtml = filteredClasses.map(cls => {
+              const isSelected = cls.videoId === currentVideoId;
+
+              return `
+                <li class="class-item ${isSelected ? 'selected' : ''}" data-video-id="${cls.videoId}">
+                  ${isSelected ? '<div class="selected-indicator"></div>' : ''}
+                  <div class="class-item-content">
+                    <div class="class-info">
+                      <div class="class-icon">
+                        <i class="fas fa-play-circle"></i>
+                        ${isSelected ? `
+                          <div class="playing-indicator">
+                            <div class="playing-indicator-ping"></div>
+                            <div class="playing-indicator-dot"></div>
+                          </div>
+                        ` : ''}
+                      </div>
+                      <div class="class-details">
+                        <h3 class="class-title">${cls.title}</h3>
+                        <div class="class-meta">
+                          <span class="class-meta-item">
+                            <i class="far fa-clock"></i>
+                            ${cls.duration}
+                          </span>
+                          <span class="class-meta-item">
+                            <i class="far fa-calendar-alt"></i>
+                            ${cls.date}
+                          </span>
+                          ${isSelected ? `
+                            <span class="now-playing">
+                              <i class="fas fa-circle"></i>
+                              Now Playing
+                            </span>
+                          ` : ''}
+                        </div>
+                      </div>
+                    </div>
+                    <a href="https://www.bondipathshala.com.bd/pdf/${cls.pdfLink}" target="_blank" class="class-pdf-link" onclick="event.stopPropagation()">
+                      <i class="fas fa-file-pdf"></i>
+                      PDF
+                    </a>
+                  </div>
+                </li>
+              `;
+            }).join('');
+
+            // Insert HTML into class list
+            classList.innerHTML = classListHtml;
+
+            // Add event listeners to class items
+            document.querySelectorAll('.class-item').forEach(item => {
+              item.addEventListener('click', function() {
+                const videoId = this.dataset.videoId;
+                selectVideo(videoId);
+              });
+            });
+          }
+
+          function loadLastWatchedVideo() {
+            // Try to load the last watched video from localStorage
+            const lastWatchedVideoId = localStorage.getItem('lastWatchedVideoId');
+            if (lastWatchedVideoId) {
+              selectVideo(lastWatchedVideoId);
+            } else if (classData.length > 0) {
+              // Default to first video if no saved video
+              selectVideo(classData[0].videoId);
             }
-        }
+          }
 
-        // Function to display the next motivational quote with fade animation
-        function showNextQuote() {
-            // Start fade-out
-            quoteElement.classList.add('fade-out');
+          function selectVideo(videoId) {
+            // Find the class data for this video
+            const classItem = classData.find(cls => cls.videoId === videoId);
+            if (!classItem) return;
 
-            // Wait for fade-out to complete, then change text and fade in
-            setTimeout(() => {
-                currentQuoteIndex = (currentQuoteIndex + 1) % motivationalQuotes.length;
-                quoteElement.textContent = motivationalQuotes[currentQuoteIndex];
-                // Remove fade-out class to trigger fade-in
-                quoteElement.classList.remove('fade-out');
-            }, 1000); // Match this duration to the CSS transition duration
-        }
+            // Update current state
+            currentVideoId = videoId;
 
+            // Update localStorage
+            localStorage.setItem('lastWatchedVideoId', videoId);
 
-        // Wait for the DOM to be fully loaded before initializing
-        document.addEventListener('DOMContentLoaded', () => {
-            // Populate the lecture list dynamically
-            populateLectureList();
+            // Update UI
+            currentVideoTitle.textContent = classItem.title;
+            currentVideoDuration.textContent = classItem.duration;
 
-            // Load the first lecture by default
-            if (lectureData.length > 0) {
-                loadLecture(lectureData[0]);
-            }
+            // Update video thumbnail
+            // Corrected thumbnail URL format
+            videoThumbnail.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            videoThumbnail.alt = classItem.title;
 
-            // Sync heights initially
-            syncHeights();
+            // Reset video player - show thumbnail again
+            videoThumbnailContainer.classList.remove('hidden');
+            youtubeEmbedContainer.classList.add('hidden');
 
-            // Sync heights on window resize
-            window.addEventListener('resize', syncHeights);
+            // Update button actions
+            downloadPdfBtn.onclick = function() {
+              window.open(`https://www.bondipathshala.com.bd/pdf/${classItem.pdfLink}`, '_blank');
+            };
 
-             // Observe the player area for height changes (e.g., if content loads dynamically)
-            // This is a more robust way to handle height syncing
-            const resizeObserver = new ResizeObserver(entries => {
-                // Check if the observed element (playerAreaDiv) height has changed
-                for (let entry of entries) {
-                    if (entry.target === document.getElementById('player-area')) {
-                        syncHeights();
-                        break; // Only need to react to playerAreaDiv changes
-                    }
-                }
+            openYoutubeBtn.onclick = function() {
+              // Corrected YouTube video URL format
+              window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+            };
+
+            // Re-render class list to update selection
+            renderClassList();
+          }
+
+          function loadYoutubeVideo(videoId) {
+            // Set iframe src
+            youtubeIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&fs=1&iv_load_policy=3&cc_load_policy=0`;
+
+            // Hide thumbnail and show iframe
+            videoThumbnailContainer.classList.add('hidden');
+            youtubeEmbedContainer.classList.remove('hidden');
+          }
+
+          function setupEventListeners() {
+            // Click on thumbnail to play video
+            videoThumbnailContainer.addEventListener('click', function() {
+              loadYoutubeVideo(currentVideoId);
             });
 
-            // Start observing the player area
-            resizeObserver.observe(document.getElementById('player-area'));
-
-            // Clean up the observer when the page is unloaded (optional but good practice)
-            window.addEventListener('beforeunload', () => {
-                resizeObserver.disconnect();
+            // Handle back button to reset history
+            window.addEventListener('popstate', function() {
+              if (window.location.pathname === '/') {
+                window.history.replaceState(null, '', '/');
+              }
             });
 
-
-            // Initialize the first quote
-            if (motivationalQuotes.length > 0) {
-                quoteElement.textContent = motivationalQuotes[currentQuoteIndex];
+            // Clean up history stack on page load
+            if (window.history.length > 2) {
+              window.history.replaceState(null, '', window.location.pathname);
             }
-
-            // Change quote periodically (e.g., every 10 seconds)
-            setInterval(showNextQuote, 10000); // Change quote every 10 seconds
+          }
         });
-
     </script>
-
 </body>
 </html>
