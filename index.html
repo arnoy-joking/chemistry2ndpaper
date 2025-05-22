@@ -167,7 +167,7 @@
 <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="bgQHU6Xujk0" data-nname="পরিবেশ রসায়ন - পর্ব ৫.২" data-npdf="20250306-1741200018-xWiO1pyn.pdf">
   পরিবেশ রসায়ন - পর্ব ৫.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7IMIa5hhLRI" data-nname="পরিবেশ রসায়ন - পর্ব ০৬" data-npdf="20250311-1741633017-K9qX4VRe.pdf">
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7IMIa5hhLRI" data-nname="পরি পরিবেশ রসায়ন - পর্ব ০৬" data-npdf="20250311-1741633017-K9qX4VRe.pdf">
   পরি পরিবেশ রসায়ন - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
 <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="uJ856LNuNew" data-nname="পরিবেশ রসায়ন - পর্ব ০৭" data-npdf="20250312-1741782028-HG9S5qpX.pdf">
@@ -254,18 +254,36 @@
       }
     }
 
-    // Listen for the 'ready' event to set quality once the player is ready
-    player.on('ready', event => {
-      setTimeout(setHighestQuality, 100);
-    });
-
-    // Listen for the 'sourcechange' event to set quality when a new video is loaded
-    player.on('sourcechange', event => {
-      setTimeout(setHighestQuality, 100);
-    });
-
     // Variable to store the current video ID
     let currentVideoId = '';
+    // Variable to store the last saved playback time
+    let lastSavedTime = 0;
+    // Interval for saving playback progress
+    let saveProgressInterval;
+
+    // Function to save playback position to localStorage
+    function savePlaybackProgress() {
+      if (currentVideoId && player.currentTime > 0) {
+        // Only save if current time has changed significantly or at intervals
+        if (Math.abs(player.currentTime - lastSavedTime) > 1 || player.currentTime === player.duration) {
+          localStorage.setItem(`video_progress_${currentVideoId}`, player.currentTime);
+          lastSavedTime = player.currentTime;
+          console.log(`Saved progress for ${currentVideoId} at ${player.currentTime.toFixed(2)}s`);
+        }
+      }
+    }
+
+    // Function to load and apply playback position from localStorage
+    function loadPlaybackProgress(videoId) {
+      const savedTime = parseFloat(localStorage.getItem(`video_progress_${videoId}`));
+      if (!isNaN(savedTime) && savedTime > 0) {
+        // Use a timeout to ensure the player is ready before seeking
+        player.on('ready', () => {
+          player.currentTime = savedTime;
+          console.log(`Resuming ${videoId} from ${savedTime.toFixed(2)}s`);
+        });
+      }
+    }
 
     // Handle class selection
     function attachClassItemListeners() {
@@ -283,7 +301,7 @@
       classItems.forEach(item => {
         const new_listener = () => {
           const videoId = item.dataset.vid;
-          currentVideoId = videoId; // Store the video ID for the YouTube button
+          currentVideoId = videoId; // Store the video ID for the YouTube button and progress saving
           player.source = {
             type: 'video',
             sources: [{ src: videoId, provider: 'youtube' }]
@@ -297,6 +315,15 @@
           } else {
             downloadPdfBtn.classList.add('hidden');
           }
+
+          // Load playback progress for the newly selected video
+          loadPlaybackProgress(videoId);
+
+          // Clear previous interval and start a new one for the current video
+          if (saveProgressInterval) {
+            clearInterval(saveProgressInterval);
+          }
+          saveProgressInterval = setInterval(savePlaybackProgress, 5000); // Save every 5 seconds
         };
         item.addEventListener('click', new_listener);
         item._eventListener = new_listener;
@@ -304,7 +331,7 @@
     }
     attachClassItemListeners();
 
-    // Load videos from localStorage
+    // Load videos from localStorage (for custom added videos)
     const storedVideos = JSON.parse(localStorage.getItem('customVideos')) || [];
     const classListUl = document.getElementById('classList');
     storedVideos.forEach(video => {
@@ -316,7 +343,31 @@
       li.innerHTML = `${video.title}${video.pdfLink ? ` <i class="fas fa-file-pdf text-red-500 ml-2"></i>` : ''}`;
       classListUl.appendChild(li);
     });
+    // Re-attach listeners after adding custom videos
     attachClassItemListeners();
+
+    // Initial setup: Load progress for the default video if available
+    // The default video is set by data-plyr-embed-id="RUQcm3vIbWo"
+    // We need to ensure the player is ready before trying to load progress for the initial video.
+    player.on('ready', () => {
+      currentVideoId = 'RUQcm3vIbWo'; // Set initial video ID
+      loadPlaybackProgress(currentVideoId);
+      // Start saving progress for the initial video
+      if (saveProgressInterval) {
+        clearInterval(saveProgressInterval);
+      }
+      saveProgressInterval = setInterval(savePlaybackProgress, 5000); // Save every 5 seconds
+    });
+
+    // Listen for the 'ready' event to set quality once the player is ready
+    player.on('ready', event => {
+      setTimeout(setHighestQuality, 100);
+    });
+
+    // Listen for the 'sourcechange' event to set quality when a new video is loaded
+    player.on('sourcechange', event => {
+      setTimeout(setHighestQuality, 100);
+    });
 
     // Download Emoji button functionality using the stored video ID
     const downloadEmojiBtn = document.getElementById('downloadEmojiBtn');
@@ -325,7 +376,30 @@
         const youtubeUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
         window.open(youtubeUrl, '_blank');
       } else {
-        alert("No video selected");
+        // Using a custom message box instead of alert()
+        const messageBox = document.createElement('div');
+        messageBox.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #333;
+          color: white;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          z-index: 1000;
+          text-align: center;
+        `;
+        messageBox.innerHTML = `
+          <p>No video selected</p>
+          <button style="margin-top: 10px; padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">OK</button>
+        `;
+        document.body.appendChild(messageBox);
+
+        messageBox.querySelector('button').addEventListener('click', () => {
+          document.body.removeChild(messageBox);
+        });
       }
     });
 
@@ -365,6 +439,9 @@
         }
       }
     });
+
+    // Save progress when the user leaves or closes the tab
+    window.addEventListener('beforeunload', savePlaybackProgress);
   </script>
 
 </body>
