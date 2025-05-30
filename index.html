@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Existing scripts for video and XLSX handling -->
   <script type="text/javascript">
     var gk_isXlsx = false;
     var gk_xlsxFileLookup = {};
@@ -14,23 +15,13 @@
           var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
           var firstSheetName = workbook.SheetNames[0];
           var worksheet = workbook.Sheets[firstSheetName];
-
-          // Convert sheet to JSON to filter blank rows
           var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-          // Filter out blank rows (rows where all cells are empty, null, or undefined)
           var filteredData = jsonData.filter(row => row.some(filledCell));
-
-          // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
           var headerRowIndex = filteredData.findIndex((row, index) =>
             row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
           );
-          // Fallback
-          if (headerRowIndex === -1 || headerRowIndex > 25) {
-            headerRowIndex = 0;
-          }
-
-          // Convert filtered JSON back to CSV
-          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+          if (headerRowIndex === -1 || headerRowIndex > 25) headerRowIndex = 0;
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
           csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
           return csv;
         } catch (e) {
@@ -45,80 +36,89 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>পড় মন দিয়া</title>
+  <link rel="icon" href="https://cdn-icons-png.freepik.com/512/7856/7856382.png" type="image/png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://cdn.plyr.io/3.7.8/plyr.css" rel="stylesheet">
   <style>
-    /* Custom dark theme styles */
     body {
-      background-color: #1a202c; /* Dark background */
-      color: #e2e8f0; /* Light text */
-      background-image: url('https://img.freepik.com/free-vector/abstract-blue-circle-black-background-technology_1142-12714.jpg?t=st=1746541992~exp=1746545592~hmac=0a0242f10827fa6240cd3daf8fce772208de97db1a053c959e6f07d12e6e6d51&w=996');
-      background-size: cover;
-      background-attachment: fixed;
-    }
-    .bg-white {
-      background-color: #2d3748; /* Darker background for cards */
-    }
-    .text-gray-100 {
-      color: #e2e8f0; /* Ensure text is light on dark background */
-    }
-    /* Adjust text color for list items */
-    #classList li {
+      background: radial-gradient(circle at top, #0f0f3d, #000);
       color: #e2e8f0;
+      min-height: 100vh;
+      background-attachment: fixed;
+      font-family: 'Segoe UI', sans-serif;
     }
-    #classList li i {
-      color: #f56565; /* Keep red for PDF icon */
+
+    header {
+      background-color: #000;
+      box-shadow: 0 0 10px #0ff;
     }
-    .hover\:bg-blue-100:hover {
-      background-color: #4a5568; /* Darker hover effect */
+
+    .bg-white {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    .text-gray-100,
+    .text-lg {
+      color: #9cf !important;
+    }
+
+    #classList li {
+      color: #ccc;
+    }
+
+    #classList li:hover {
+      background-color: rgba(0, 255, 255, 0.1);
+    }
+
     .bg-blue-200 {
-      background-color: #4a5568; /* Darker background for selected item */
+      background-color: rgba(0, 255, 255, 0.2) !important;
     }
+
     .text-red-500 {
-      color: #f56560; /* Keep red for PDF icon */
+      color: #f56565;
     }
-    /* Style for the fake button */
+
     .fake-button {
-      pointer-events: none; /* Make it non-interactive */
-      opacity: 0.6; /* Dim it to show it's fake */
+      pointer-events: none;
+      opacity: 0.6;
     }
+
     .footer-quotes {
       margin-top: 1rem;
       font-size: 0.9rem;
-      color: #a0aec0; /* Lighter text for quotes */
+      color: #888;
     }
+
     .footer-quotes p {
       margin-bottom: 0.5rem;
     }
-    /* Styling for the Download Emoji button */
+
     .download-emoji {
-      display: inline-block;
-      background-color: #f6993f; /* Example color, adjust as needed */
-      color: #1a202c; /* Dark text for contrast */
+      background-color: #0ff;
+      color: #000;
       padding: 0.5rem 1rem;
-      border-radius: 0.25rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
+      border-radius: 0.5rem;
+      transition: background 0.3s;
     }
+
     .download-emoji:hover {
-      background-color: #de751f; /* Darker hover color */
+      background-color: #0cc;
     }
-    /* Plyr Customizations */
-    /* Make the progress bar take available space */
-    .plyr__progress {
-      flex-grow: 1; /* Allow progress bar to take more space */
-      margin-right: 10px; /* Add some space */
+
+    .shadow-md {
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     }
-    /* Ensure controls are a flex container */
-    .plyr__controls {
-      display: flex;
-      align-items: center; /* Align items vertically */
+
+    h1, h2 {
+      text-shadow: 0 0 10px #0ff;
     }
-    /* Hide the volume control entirely */
-    .plyr__controls__item.plyr__volume {
-      display: none !important;
+
+    footer {
+      background-color: #000;
+      color: #888;
+      border-top: 1px solid #222;
     }
   </style>
 </head>
@@ -149,56 +149,53 @@
 
       <h2 class="text-lg font-semibold mb-4 text-gray-100">Class List</h2>
       <ul id="classList" class="space-y-2 max-h-96 overflow-y-auto">
-       <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="UYKjozabKqo" data-nname="পরিবেশ রসায়ন - পর্ব ০১" data-npdf="20250218-1739823323-3VzTLEL1.pdf">
-  পরিবেশ রসায়ন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+     <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="UYKjozabKqo" data-nname="পরিবেশ রসায়ন - পর্ব ০১" data-npdf="20250218-1739823323-3VzTLEL1.pdf">
+  পরিবেশ রসায়ন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zDyEkh6n0e8" data-nname="পরিবেশ রসায়ন - পর্ব ০২" data-npdf="20250223-1740247928-odF2s7sY.pdf">
-  পরিবেশ রসায়ন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zDyEkh6n0e8" data-nname="পরিবেশ রসায়ন - পর্ব ০২" data-npdf="20250223-1740247928-odF2s7sY.pdf">
+  পরিবেশ রসায়ন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nWjQ3MRWxwo" data-nname="পরিবেশ রসায়ন - পর্ব ০৩" data-npdf="20250225-1740429645-LEv6OOKn.pdf">
-  পরিবেশ রসায়ন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="nWjQ3MRWxwo" data-nname="পরিবেশ রসায়ন - পর্ব ০৩" data-npdf="20250225-1740429645-LEv6OOKn.pdf">
+  পরিবেশ রসায়ন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3_3trnRP39Y" data-nname="পরিবেশ রসায়ন - পর্ব ০৪" data-npdf="20250303-1740940741-meClfVqN.pdf">
-  পরিবেশ রসায়ন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3_3trnRP39Y" data-nname="পরিবেশ রসায়ন - পর্ব ০৪" data-npdf="20250303-1740940741-meClfVqN.pdf">
+  পরিবেশ রসায়ন - পর্ব ০৪ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="bC00Z3Ic1Xk" data-nname="পরিবেশ রসায়ন - পর্ব ৫.১" data-npdf="20250306-1741200018-xWiO1pyn.pdf">
-  পরিবেশ রসায়ন - পর্ব ৫.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="bC00Z3Ic1Xk" data-nname="পরিবেশ রসায়ন - পর্ব ০৫" data-npdf="20250306-1741200018-xWiO1pyn.pdf">
+  পরিবেশ রসায়ন - পর্ব ৫.১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="bgQHU6Xujk0" data-nname="পরিবেশ রসায়ন - পর্ব ৫.২" data-npdf="20250306-1741200018-xWiO1pyn.pdf">
-  পরিবেশ রসায়ন - পর্ব ৫.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="bgQHU6Xujk0" data-nname="পরিবেশ রসায়ন - পর্ব ০৫" data-npdf="20250306-1741200018-xWiO1pyn.pdf">
+  পরিবেশ রসায়ন - পর্ব ৫.২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7IMIa5hhLRI" data-nname="পরি পরিবেশ রসায়ন - পর্ব ০৬" data-npdf="20250311-1741633017-K9qX4VRe.pdf">
-  পরি পরিবেশ রসায়ন - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7IMIa5hhLRI" data-nname="পরিবেশ রসায়ন - পর্ব ০৬" data-npdf="20250311-1741633017-K9qX4VRe.pdf">
+  পরিবেশ রসায়ন - পর্ব ০৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="uJ856LNuNew" data-nname="পরিবেশ রসায়ন - পর্ব ০৭" data-npdf="20250312-1741782028-HG9S5qpX.pdf">
-  পরিবেশ রসায়ন - পর্ব ০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="uJ856LNuNew" data-nname="পরিবেশ রসায়ন - পর্ব ০৭" data-npdf="20250312-1741782028-HG9S5qpX.pdf">
+  পরিবেশ রসায়ন - পর্ব ০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="M1c8rt6PQNg" data-nname="পরিবেশ রসায়ন - পর্ব ০ আট" data-npdf="20250317-1742185178-YIKmZZW9.pdf">
-  পরিবেশ রসায়ন - পর্ব ০ আট <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="M1c8rt6PQNg" data-nname="পরিবেশ রসায়ন - পর্ব ০৮" data-npdf="20250317-1742185178-YIKmZZW9.pdf">
+  পরিবেশ রসায়ন - পর্ব ০৮ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="JXw939poe3s" data-nname="পরিবেশ রসায়ন - পর্ব ০৯" data-npdf="20250319-1742389133-v4UTOPzR.pdf">
-  পরিবেশ রসায়ন - পর্ব ০৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="JXw939poe3s" data-nname="পরিবেশ রসায়ন - পর্ব ০৯" data-npdf="20250319-1742389133-v4UTOPzR.pdf">
+  পরিবেশ রসায়ন - পর্ব ০৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3O7YKhp_ecc" data-nname="পরিবেশ রসায়ন - পর্ব ১০" data-npdf="20250324-1742753112-1Y11SX5L.pdf">
-  পরিবেশ রসায়ন - পর্ব ১০ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="3O7YKhp_ecc" data-nname="পরিবেশ রসায়ন - পর্ব ১০" data-npdf="20250324-1742753112-1Y11SX5L.pdf">
+  পরিবেশ রসায়ন - পর্ব ১০ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ipP4qHlM6BE" data-nname="পরিবেশ রসায়ন । CQ Solve" data-npdf="20250326-1742990797-waHcgGmU.pdf">
-  পরিবেশ রসায়ন । CQ Solve <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ipP4qHlM6BE" data-nname="পরিবেশ রসায়ন । CQ Solve" data-npdf="20250326-1742990797-waHcgGmU.pdf">
+  পরিবেশ রসায়ন । CQ Solve <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="87dsre6Xmu8" data-nname="পরিবেশ রসায়ন । Engineering Question Solve" data-npdf="20250326-1742990954-0FjGgcaK.pdf">
-  পরিবেশ রসায়ন । Engineering Question Solve <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="87dsre6Xmu8" data-nname="পরিবেশ রসায়ন । Engineering Question Solve" data-npdf="20250326-1742990954-0FjGgcaK.pdf">
+  পরিবেশ রসায়ন । Engineering Question Solve <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="KX9Zsr0q-sM" data-nname="পরি পরিবেশ রসায়ন - পর্ব ১১" data-npdf="20250327-1743018786-VGGzkUun.pdf">
-  পরি পরিবেশ রসায়ন - পর্ব ১১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="KX9Zsr0q-sM" data-nname="পরিবেশ রসায়ন - পর্ব ১১" data-npdf="20250327-1743018786-VGGzkUun.pdf">
+  পরিবেশ রসায়ন - পর্ব ১১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="zLC6TKypyjU" data-nname="পরিমাণগত রসায়ন - Shawon Reza" data-npdf="">
-  পরিমাণগত রসায়ন - Shawon Reza
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="of06Ub_etWw" data-nname="পরিমাণগত রসায়ন - পর্ব ০১" data-npdf="20250414-1744575810-wa0Fvcck.pdf">
+  পরিমাণগত রসায়ন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="of06Ub_etWw" data-nname="পরিমাণগত রসায়ন - পর্ব ০১" data-npdf="20250414-1744575810-wa0Fvcck.pdf">
-  পরিমাণগত রসায়ন - পর্ব ০১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
-</li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="xz61nu85cIY" data-nname="পরিমাণগত রসায়ন - পর্ব ০২" data-npdf="20250416-1744744963-MlP5oCQ3.pdf">
-  পরিমাণগত রসায়ন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="xz61nu85cIY" data-nname="পরিমাণগত রসায়ন - পর্ব ০২" data-npdf="20250416-1744744963-MlP5oCQ3.pdf">
+  পরিমাণগত রসায়ন - পর্ব ০২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
 <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="F1mnRXoahO0" data-nname="পরিমাণগত রসায়ন - পর্ব ০৩" data-npdf="20250418-1744921916-P3IbDZg8.pdf">
   পরিমাণগত রসায়ন - পর্ব ০৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
@@ -209,11 +206,41 @@
 <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="vE0d8VQ6tPM" data-nname="পরিমাণগত রসায়ন - পর্ব ০৫" data-npdf="20250423-1745347488-uxt3UlV5.pdf">
   পরিমাণগত রসায়ন - পর্ব ০৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
-<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7QzJDf9fHmM" data-nname="পরিমানগত  রসায়ন - পর্ব ০৬" data-npdf="">
-  পরিমানগত  রসায়ন - পর্ব ০৬
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="7QzJDf9fHmM" data-nname="পরিমানগত  রসায়ন - পর্ব ০৬">
+  পরিমানগত  রসায়ন - পর্ব ০৬
 </li>
 <li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="n-G4CH8uAiU" data-nname="পরিমাণগত রসায়ন - পর্ব ০৭" data-npdf="20250430-1745959044-cxfl0JEK.pdf">
   পরিমাণগত রসায়ন - পর্ব ০৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="neyYWLVb8HU" data-nname="পরিমাণগত রসায়ন - পর্ব ০৮" data-npdf="20250505-1746386045-uXqlB0Sl.pdf">
+  পরিমাণগত রসায়ন - পর্ব ০৮ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="VIHxAuzcdYE" data-nname="পরিমাণগত রসায়ন - পর্ব ০৯" data-npdf="20250507-1746563965-cSOGn02p.pdf">
+  পরিমাণগত রসায়ন - পর্ব ০৯ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="_lnt_CcfGSc">
+  পরিমাণগত রসায়ন - পর্ব ১০
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="wYxLw7vqCII" data-nname="পরিমাণগত রসায়ন  - পর্ব ১১" data-npdf="20250514-1747164944-c4epAO9L.pdf">
+  পরিমাণগত রসায়ন  - পর্ব ১১ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="vBLx4noei-o" data-nname="পরিমাণগত রসায়ন - পর্ব ১২" data-npdf="20250516-1747341805-KQvQzBIV.pdf">
+  পরিমাণগত রসায়ন - পর্ব ১২ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="ekq2aprmt3c" data-nname="পরিমাণগত রসায়ন  - পর্ব  ১৩" data-npdf="20250519-1747594848-XxqYzdzh.pdf">
+  পরিমাণগত রসায়ন  - পর্ব  ১৩ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="wHDJVekpwyM">
+  পরিমাণগত রসায়ন - পর্ব  ১৪
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="I14Acmq0slk" data-nname="পরিমাণগত রসায়ন - পর্ব  ১৫" data-npdf="20250523-1747950969-fsjRq3SX.pdf">
+  পরিমাণগত রসায়ন - পর্ব  ১৫ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="EavZklqL7q0" data-nname="পরিমাণগত রসায়ন - পর্ব ১৬" data-npdf="20250526-1748209675-d4l5AWS8.pdf">
+  পরিমাণগত রসায়ন - পর্ব ১৬ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
+</li>
+<li class="class-item p-2 rounded hover:bg-blue-100 cursor-pointer" data-vid="9bE3dgV2onI" data-nname="পরিমাণগত রসায়ন - পর্ব ১৭" data-npdf="20250528-1748381795-CncIVfPk.pdf">
+  পরিমাণগত রসায়ন - পর্ব ১৭ <i class="fas fa-file-pdf text-red-500 ml-2"></i>
 </li>
       </ul>
     </div>
@@ -254,36 +281,18 @@
       }
     }
 
+    // Listen for the 'ready' event to set quality once the player is ready
+    player.on('ready', event => {
+      setTimeout(setHighestQuality, 100);
+    });
+
+    // Listen for the 'sourcechange' event to set quality when a new video is loaded
+    player.on('sourcechange', event => {
+      setTimeout(setHighestQuality, 100);
+    });
+
     // Variable to store the current video ID
     let currentVideoId = '';
-    // Variable to store the last saved playback time
-    let lastSavedTime = 0;
-    // Interval for saving playback progress
-    let saveProgressInterval;
-
-    // Function to save playback position to localStorage
-    function savePlaybackProgress() {
-      if (currentVideoId && player.currentTime > 0) {
-        // Only save if current time has changed significantly or at intervals
-        if (Math.abs(player.currentTime - lastSavedTime) > 1 || player.currentTime === player.duration) {
-          localStorage.setItem(`video_progress_${currentVideoId}`, player.currentTime);
-          lastSavedTime = player.currentTime;
-          console.log(`Saved progress for ${currentVideoId} at ${player.currentTime.toFixed(2)}s`);
-        }
-      }
-    }
-
-    // Function to load and apply playback position from localStorage
-    function loadPlaybackProgress(videoId) {
-      const savedTime = parseFloat(localStorage.getItem(`video_progress_${videoId}`));
-      if (!isNaN(savedTime) && savedTime > 0) {
-        // Use a timeout to ensure the player is ready before seeking
-        player.on('ready', () => {
-          player.currentTime = savedTime;
-          console.log(`Resuming ${videoId} from ${savedTime.toFixed(2)}s`);
-        });
-      }
-    }
 
     // Handle class selection
     function attachClassItemListeners() {
@@ -301,7 +310,7 @@
       classItems.forEach(item => {
         const new_listener = () => {
           const videoId = item.dataset.vid;
-          currentVideoId = videoId; // Store the video ID for the YouTube button and progress saving
+          currentVideoId = videoId; // Store the video ID for the YouTube button
           player.source = {
             type: 'video',
             sources: [{ src: videoId, provider: 'youtube' }]
@@ -315,15 +324,6 @@
           } else {
             downloadPdfBtn.classList.add('hidden');
           }
-
-          // Load playback progress for the newly selected video
-          loadPlaybackProgress(videoId);
-
-          // Clear previous interval and start a new one for the current video
-          if (saveProgressInterval) {
-            clearInterval(saveProgressInterval);
-          }
-          saveProgressInterval = setInterval(savePlaybackProgress, 5000); // Save every 5 seconds
         };
         item.addEventListener('click', new_listener);
         item._eventListener = new_listener;
@@ -331,7 +331,7 @@
     }
     attachClassItemListeners();
 
-    // Load videos from localStorage (for custom added videos)
+    // Load videos from localStorage
     const storedVideos = JSON.parse(localStorage.getItem('customVideos')) || [];
     const classListUl = document.getElementById('classList');
     storedVideos.forEach(video => {
@@ -343,31 +343,7 @@
       li.innerHTML = `${video.title}${video.pdfLink ? ` <i class="fas fa-file-pdf text-red-500 ml-2"></i>` : ''}`;
       classListUl.appendChild(li);
     });
-    // Re-attach listeners after adding custom videos
     attachClassItemListeners();
-
-    // Initial setup: Load progress for the default video if available
-    // The default video is set by data-plyr-embed-id="RUQcm3vIbWo"
-    // We need to ensure the player is ready before trying to load progress for the initial video.
-    player.on('ready', () => {
-      currentVideoId = 'RUQcm3vIbWo'; // Set initial video ID
-      loadPlaybackProgress(currentVideoId);
-      // Start saving progress for the initial video
-      if (saveProgressInterval) {
-        clearInterval(saveProgressInterval);
-      }
-      saveProgressInterval = setInterval(savePlaybackProgress, 5000); // Save every 5 seconds
-    });
-
-    // Listen for the 'ready' event to set quality once the player is ready
-    player.on('ready', event => {
-      setTimeout(setHighestQuality, 100);
-    });
-
-    // Listen for the 'sourcechange' event to set quality when a new video is loaded
-    player.on('sourcechange', event => {
-      setTimeout(setHighestQuality, 100);
-    });
 
     // Download Emoji button functionality using the stored video ID
     const downloadEmojiBtn = document.getElementById('downloadEmojiBtn');
@@ -376,30 +352,7 @@
         const youtubeUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
         window.open(youtubeUrl, '_blank');
       } else {
-        // Using a custom message box instead of alert()
-        const messageBox = document.createElement('div');
-        messageBox.style.cssText = `
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background-color: #333;
-          color: white;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-          z-index: 1000;
-          text-align: center;
-        `;
-        messageBox.innerHTML = `
-          <p>No video selected</p>
-          <button style="margin-top: 10px; padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">OK</button>
-        `;
-        document.body.appendChild(messageBox);
-
-        messageBox.querySelector('button').addEventListener('click', () => {
-          document.body.removeChild(messageBox);
-        });
+        alert("No video selected");
       }
     });
 
@@ -439,9 +392,6 @@
         }
       }
     });
-
-    // Save progress when the user leaves or closes the tab
-    window.addEventListener('beforeunload', savePlaybackProgress);
   </script>
 
 </body>
